@@ -1,0 +1,64 @@
+---
+title: "MCIA_mbpca.Rmd"
+author: "Anna Konstorum"
+output: html_document
+---
+
+# Implement MCIA using modified mbpca function from mogsa library
+# Anna Konstorum (anna.konstorum@yale.edu)
+
+
+```{r load libraries}
+#if (!require("BiocManager", quietly = TRUE))
+#  install.packages("BiocManager")
+#BiocManager::install("mogsa")
+
+# load libraries
+library(omicade4)
+library(mogsa)
+library(devtools)
+library(RSpectra)
+library(corpcor)
+
+# example
+data("NCI60_4arrays")
+```
+
+# Source additional functions from mbca library (not directly available by loading library)
+```{r}
+setwd('/Users/akonsto/Box Sync/MCIA_research/scripts/')
+source('MCIA_mbpca_extra.R')
+```
+
+
+### Run MCIA
+# mcia_obj$tb - the block scores
+# mcia_obj$pb - the block loadings
+# mcia_obj$t - the global scores
+# mcia_obj$w - the weights of block scores to construct the global score
+
+```{r}
+num_comps=10
+mcia_out<-mcia_mbpca(NCI60_4arrays,num_comps,preprocess='nsc',block_prep='lambda_all',
+                     deflat_method='globalScore')
+```
+
+```{r}
+plot(mcia_out$mcia_result$t[,1:2])
+```
+
+
+
+# Calculate global scores using MCIA block scores and weights
+```{r}
+gs=new_gs(mcia_out$data_prep,mcia_out$mcia_result)
+```
+
+# Check whether calculated global scores are equivalent to global scores returned by mcia_mbpca
+```{r}
+#block_test = blocks_out[[1]] - mcia_test$tb[[1]]
+#block_test_norm = norm(block_test,type="F")
+
+global_test = gs - mcia_out$mcia_result$t
+global_test_norm = norm(global_test,type="F")
+```
