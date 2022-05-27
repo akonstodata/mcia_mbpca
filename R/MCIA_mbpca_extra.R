@@ -161,7 +161,7 @@ mcia_mbpca<-function(data_input,num_comps,preprocess='nsc',block_prep='inertia',
   }
   # block-level preprocess 
   final_out<-processOpt(table_out,scale=FALSE,center=FALSE,num_comps,option=block_prep)
-  
+
   mcia_out<-mbpca(final_out,ncomp=num_comps,k="all",method=deflat_method,
                   option="uniform",center=FALSE,scale=FALSE,
                   unit.p=TRUE,unit.obs=FALSE,moa=FALSE)
@@ -198,4 +198,4 @@ new_gs<-function(data_input,mcia_out){
   }
   return(gs)
 }
-```
+
